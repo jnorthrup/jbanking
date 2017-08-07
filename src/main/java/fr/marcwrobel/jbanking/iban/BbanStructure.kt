@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 		http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.marcwrobel.jbanking.iban;
+package fr.marcwrobel.jbanking.iban
 
-import fr.marcwrobel.jbanking.IsoCountry;
-import fr.marcwrobel.jbanking.swift.SwiftPattern;
+import fr.marcwrobel.jbanking.IsoCountry
+import fr.marcwrobel.jbanking.swift.SwiftPattern
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.Arrays
+import java.util.EnumSet
 
 /**
  * Provides BBAN (also known as basic bank account number) structure for each ISO 13616-compliant national IBAN formats.
  *
- * <p>It is based on the document <i>IBAN REGISTRY Release 45</i> issued by SWIFT on May 2013.</p>
+ *
+ * It is based on the document *IBAN REGISTRY Release 45* issued by SWIFT on May 2013.
  *
  * @author Marc Wrobel
- * @see <a href="http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf">http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf</a>
+ * @see [http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf](http://www.swift.com/dsp/resources/documents/IBAN_Registry.pdf)
+ *
  * @since 1.0
  */
-public enum BbanStructure {
+enum class BbanStructure private constructor(
+        /**
+         * Returns this BBAN definition country.
+         *
+         * @return a non null country
+         */
+        val country: IsoCountry, bbanSwiftExpression: String, vararg subdivisions: IsoCountry) {
 
     ALBANIA(IsoCountry.ALBANIA, "8!n16!c"),
     ANDORRA(IsoCountry.ANDORRA, "4!n4!n12!c"),
@@ -114,87 +121,71 @@ public enum BbanStructure {
     QATAR(IsoCountry.QATAR, "4!a21!c"),
     BRITISH_VIRGIN_ISLANDS(IsoCountry.BRITISH_VIRGIN_ISLANDS, "4!a16!n");
 
-    private final IsoCountry country;
-    private final SwiftPattern bbanPattern;
-    private final Set<IsoCountry> subdivisions;
-
-    private BbanStructure(IsoCountry country, String bbanSwiftExpression, IsoCountry... subdivisions) {
-        this.country = country;
-        this.bbanPattern = SwiftPattern.compile(bbanSwiftExpression);
-
-        if (subdivisions.length == 0) {
-            this.subdivisions = EnumSet.noneOf(IsoCountry.class);
-        } else {
-            this.subdivisions = EnumSet.copyOf(Arrays.asList(subdivisions));
-        }
-    }
-
     /**
-     * Returns the appropriate BbanStructure given the country, or null if IBAN are not in use in this country.
+     * Returns this BBAN definition pattern.
      *
-     * @param country A Country.
-     * @return the given country BBAN definition, or null if IBAN are not in use in this country or if the argument is {@code null}.
+     * @return a non null pattern
      */
-    public static BbanStructure forCountry(IsoCountry country) {
-        if (country == null) {
-            return null;
+    val bbanPattern: SwiftPattern
+    /**
+     * Returns this BBAN definition subdivision countries.
+     *
+     * @return a non null Set of countries (may be empty).
+     */
+    val subdivisions: Set<IsoCountry>
+
+    init {
+        this.bbanPattern = SwiftPattern.compile(bbanSwiftExpression)
+
+        if (subdivisions.size == 0) {
+            this.subdivisions = EnumSet.noneOf(IsoCountry::class.java)
+        } else {
+            this.subdivisions = EnumSet.copyOf(Arrays.asList(*subdivisions))
         }
-
-        for (BbanStructure structure : values()) {
-            if (structure.country.equals(country)) {
-                return structure;
-
-            } else {
-                for (IsoCountry subdivision : structure.subdivisions) {
-                    if (subdivision.equals(country)) {
-                        return structure;
-                    }
-                }
-            }
-        }
-
-        return null;
     }
 
     /**
      * Test whether or not the given BBAN is valid.
      *
      * @param bban A non null string.
-     * @return {@code true} if the given BBAN is valid against this BBAN structure, {@code false} otherwise.
+     * @return `true` if the given BBAN is valid against this BBAN structure, `false` otherwise.
      * @throws IllegalArgumentException if the given BBAN is null
      */
-    public boolean isBbanValid(String bban) {
+    fun isBbanValid(bban: String?): Boolean {
         if (bban == null) {
-            throw new IllegalArgumentException("the bban argument cannot be null");
+            throw IllegalArgumentException("the bban argument cannot be null")
         }
 
-        return bbanPattern.matcher(bban).matches();
+        return bbanPattern.matcher(bban).matches()
     }
 
-    /**
-     * Returns this BBAN definition country.
-     *
-     * @return a non null country
-     */
-    public IsoCountry getCountry() {
-        return country;
-    }
+    companion object {
 
-    /**
-     * Returns this BBAN definition pattern.
-     *
-     * @return a non null pattern
-     */
-    public SwiftPattern getBbanPattern() {
-        return bbanPattern;
-    }
+        /**
+         * Returns the appropriate BbanStructure given the country, or null if IBAN are not in use in this country.
+         *
+         * @param country A Country.
+         * @return the given country BBAN definition, or null if IBAN are not in use in this country or if the argument is `null`.
+         */
+        fun forCountry(country: IsoCountry?): BbanStructure? {
+            if (country == null) {
+                return null
+            }
 
-    /**
-     * Returns this BBAN definition subdivision countries.
-     *
-     * @return a non null Set of countries (may be empty).
-     */
-    public Set<IsoCountry> getSubdivisions() {
-        return subdivisions;
+            for (structure in values()) {
+                if (structure.country == country) {
+                    return structure
+
+                } else {
+                    for (subdivision in structure.subdivisions) {
+                        if (subdivision == country) {
+                            return structure
+                        }
+                    }
+                }
+            }
+
+            return null
+        }
     }
 }

@@ -51,23 +51,23 @@ public class IsoCountryTest {
 
     @Test
     public void fromCodeAllowsNull() {
-        assertNull(IsoCountry.fromCode(null));
+        assertNull(IsoCountry.Companion.fromCode(null));
     }
 
     @Test
     public void fromCodeAllowsUnknownOrInvalidCodes() {
-        assertNull(IsoCountry.fromCode("XXX"));
+        assertNull(IsoCountry.Companion.fromCode("XXX"));
     }
 
     @Test
     public void fromCodeIsNotCaseSensitive() {
-        assertEquals(IsoCountry.FRANCE, IsoCountry.fromCode(IsoCountry.FRANCE.getCode().toLowerCase()));
+        assertEquals(IsoCountry.FRANCE, IsoCountry.Companion.fromCode(IsoCountry.FRANCE.getCode().toLowerCase()));
     }
 
     @Test
     public void fromCodeWorksWithExistingValues() {
         for (IsoCountry country : IsoCountry.values()) {
-            assertEquals(country, IsoCountry.fromCode(country.getCode()));
+            assertEquals(country, IsoCountry.Companion.fromCode(country.getCode()));
         }
     }
 
@@ -87,7 +87,7 @@ public class IsoCountryTest {
                 continue;
             }
 
-            assertNotNull(IsoCountry.fromCode(code));
+            assertNotNull(IsoCountry.Companion.fromCode(code));
         }
     }
 

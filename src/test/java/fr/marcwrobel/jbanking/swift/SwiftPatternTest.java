@@ -28,14 +28,14 @@ public class SwiftPatternTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aSwiftPatternCannotBeNull() {
-        SwiftPattern.compile(null);
+        SwiftPattern.Companion.compile(null);
     }
 
     @Test(expected = SwiftPatternSyntaxException.class)
     public void aSwiftPatternMustBeWellFormed() {
         String invalidPattern = "2!n3d";
         try {
-            SwiftPattern.compile("2!n3d");
+            SwiftPattern.Companion.compile("2!n3d");
         } catch (SwiftPatternSyntaxException e) {
             assertEquals(invalidPattern, e.getExpression());
             throw e;
@@ -123,27 +123,27 @@ public class SwiftPatternTest {
     }
 
     private void assertMatches(String value, String expression) {
-        SwiftPattern pattern = SwiftPattern.compile(expression);
+        SwiftPattern pattern = SwiftPattern.Companion.compile(expression);
         assertTrue(String.format("%s should match %s", value, pattern), pattern.matcher(value).matches());
     }
 
     private void assertNotMatches(String value, String expression) {
-        SwiftPattern pattern = SwiftPattern.compile(expression);
+        SwiftPattern pattern = SwiftPattern.Companion.compile(expression);
         assertFalse(String.format("%s should not match %s", value, pattern), pattern.matcher(value).matches());
     }
 
     @Test
     public void transformationTest() {
         String expression = "5!n";
-        SwiftPattern pattern = SwiftPattern.compile(expression);
+        SwiftPattern pattern = SwiftPattern.Companion.compile(expression);
         assertEquals(expression, pattern.getExpression());
         assertEquals("^[0-9]{5}$", pattern.getEquivalentJavaPattern().pattern());
     }
 
     @Test
     public void equalityTest() {
-        SwiftPattern pattern1 = SwiftPattern.compile("4!n");
-        SwiftPattern pattern2 = SwiftPattern.compile("4!n");
+        SwiftPattern pattern1 = SwiftPattern.Companion.compile("4!n");
+        SwiftPattern pattern2 = SwiftPattern.Companion.compile("4!n");
 
         assertTrue(pattern1.equals(pattern1));
         assertTrue(pattern2.equals(pattern2));
@@ -152,7 +152,7 @@ public class SwiftPatternTest {
         assertTrue(pattern2.equals(pattern1));
         assertTrue(pattern1.hashCode() == pattern2.hashCode());
 
-        SwiftPattern pattern3 = SwiftPattern.compile("3!n");
+        SwiftPattern pattern3 = SwiftPattern.Companion.compile("3!n");
         assertFalse(pattern1.equals(null));
         assertFalse(pattern1.equals(new Object()));
         assertFalse(pattern1.equals(pattern3));

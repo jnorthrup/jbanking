@@ -30,18 +30,18 @@ public class BbanStructureTest {
 
     @Test
     public void nullReturnsNull() {
-        assertNull(BbanStructure.forCountry(null));
+        assertNull(BbanStructure.Companion.forCountry(null));
     }
 
     @Test
     public void unsupportedCountryReturnsNull() {
-        assertNull(BbanStructure.forCountry(IsoCountry.UNITED_STATES));
+        assertNull(BbanStructure.Companion.forCountry(IsoCountry.UNITED_STATES));
     }
 
     @Test
     public void supportedCountryReturnsCorrespondingBbanDefinition() {
         for (BbanStructure structure : BbanStructure.values()) {
-            assertEquals(structure, BbanStructure.forCountry(structure.getCountry()));
+            assertEquals(structure, BbanStructure.Companion.forCountry(structure.getCountry()));
         }
     }
 
@@ -49,7 +49,7 @@ public class BbanStructureTest {
     public void supportedCountrySubdivisionReturnsCorrespondingBbanDefinition() {
         for (BbanStructure structure : BbanStructure.values()) {
             for (IsoCountry country : structure.getSubdivisions()) {
-                assertEquals(structure, BbanStructure.forCountry(country));
+                assertEquals(structure, BbanStructure.Companion.forCountry(country));
             }
         }
     }

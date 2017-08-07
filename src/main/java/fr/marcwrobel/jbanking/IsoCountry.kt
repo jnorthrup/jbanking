@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 		http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,21 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.marcwrobel.jbanking;
+package fr.marcwrobel.jbanking
 
 /**
  * The countries having an ISO 3166-1-alpha-2 code.
  *
- * <p>
- * Please be advised that this list is current as of 2013/05/26. Up-to-date list can be found for free on the <a href="http://www.iso.org/iso/home/standards/country_codes.htm">
- * International Organization for Standardization website</a>.
- * </p>
+ *
+ *
+ * Please be advised that this list is current as of 2013/05/26. Up-to-date list can be found for free on the [
+ * International Organization for Standardization website](http://www.iso.org/iso/home/standards/country_codes.htm).
+ *
  *
  * @author Marc Wrobel
- * @see <a href="http://www.iso.org/iso/home/standards/country_codes.htm">http://www.iso.org/iso/home/standards/country_codes.htm</a>
+ * @see [http://www.iso.org/iso/home/standards/country_codes.htm](http://www.iso.org/iso/home/standards/country_codes.htm)
+ *
  * @since 1.0
  */
-public enum IsoCountry {
+enum class IsoCountry private constructor(
+        /**
+         *
+         * Returns this country ISO 3166-1-alpha-2 code.
+         *
+         * @return a non null and 2 characters length string
+         */
+        val code: String) {
 
     AFGHANISTAN("AF"),
     ALAND_ISLANDS("AX"),
@@ -279,43 +288,34 @@ public enum IsoCountry {
     ZAMBIA("ZM"),
     ZIMBABWE("ZW");
 
-    private final String code;
 
-    private IsoCountry(String code) {
-        this.code = code;
-    }
+    companion object {
 
-    /**
-     * <p>Returns this country ISO 3166-1-alpha-2 code.</p>
-     *
-     * @return a non null and 2 characters length string
-     */
-    public String getCode() {
-        return code;
-    }
+        /**
+         *
+         * Translate the given ISO 3166-1-alpha-2 code to an IsoCountry.
+         *
+         *
+         * This method is not case sensitive.
+         *
+         * @param code A non-null String.
+         * @return the country having the given ISO 3166-1-alpha-2 code, or null if it does not exist
+         */
+        fun fromCode(code: String?): IsoCountry? {
+            val cleanedCode = code?.toUpperCase()
 
-    /**
-     * <p>Translate the given ISO 3166-1-alpha-2 code to an IsoCountry.</p>
-     *
-     * <p>This method is not case sensitive.</p>
-     *
-     * @param code A non-null String.
-     * @return the country having the given ISO 3166-1-alpha-2 code, or null if it does not exist
-     */
-    public static IsoCountry fromCode(String code) {
-        String cleanedCode = (code == null ? null : code.toUpperCase());
-
-        if (cleanedCode == null || cleanedCode.length() != 2) {
-            return null;
-        }
-
-        for (IsoCountry country : values()) {
-            if (country.getCode().equals(cleanedCode)) {
-                return country;
+            if (cleanedCode == null || cleanedCode!!.length != 2) {
+                return null
             }
-        }
 
-        return null;
+            for (country in values()) {
+                if (country.code == cleanedCode) {
+                    return country
+                }
+            }
+
+            return null
+        }
     }
 
 }

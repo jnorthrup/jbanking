@@ -32,7 +32,7 @@ public class BicTest {
     private static final String COUNTRY_CODE = IsoCountry.FRANCE.getCode();
     private static final String LOCATION_CODE = "PP";
     private static final String LOCATION_CODE_TEST = "P0";
-    private static final String BRANCH_CODE = Bic.PRIMARY_OFFICE_BRANCH_CODE;
+    private static final String BRANCH_CODE = Bic.Companion.getPRIMARY_OFFICE_BRANCH_CODE();
 
     private static final String BIC_WITH_INVALID_FORMAT = INSTITUTION_CODE + COUNTRY_CODE;
     private static final String BIC_WITH_INVALID_COUNTRY_CODE = INSTITUTION_CODE + "OO" + LOCATION_CODE;
@@ -44,7 +44,7 @@ public class BicTest {
 
     @Test
     public void nullIsNotValid() {
-        assertFalse(Bic.isValid(null));
+        assertFalse(Bic.Companion.isValid(null));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -59,7 +59,7 @@ public class BicTest {
 
     @Test
     public void blankIsNotValid() {
-        assertFalse(Bic.isValid(TestUtils.BLANK));
+        assertFalse(Bic.Companion.isValid(TestUtils.BLANK));
     }
 
     @Test(expected = BicFormatException.class)
@@ -75,7 +75,7 @@ public class BicTest {
 
     @Test
     public void aStringWithInvalidFormatIsNotValid() {
-        assertFalse(Bic.isValid(BIC_WITH_INVALID_FORMAT));
+        assertFalse(Bic.Companion.isValid(BIC_WITH_INVALID_FORMAT));
     }
 
     @Test(expected = BicFormatException.class)
@@ -91,7 +91,7 @@ public class BicTest {
 
     @Test
     public void aStringWithInvalidCountryCodeIsNotValid() {
-        assertFalse(Bic.isValid(BIC_WITH_INVALID_COUNTRY_CODE));
+        assertFalse(Bic.Companion.isValid(BIC_WITH_INVALID_COUNTRY_CODE));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class BicTest {
 
     @Test
     public void aValidBic8IsValid() {
-        assertTrue(Bic.isValid(VALID_BIC8));
+        assertTrue(Bic.Companion.isValid(VALID_BIC8));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class BicTest {
 
     @Test
     public void aValidBic11IsValid() {
-        assertTrue(Bic.isValid(VALID_BIC11));
+        assertTrue(Bic.Companion.isValid(VALID_BIC11));
     }
 
     @Test

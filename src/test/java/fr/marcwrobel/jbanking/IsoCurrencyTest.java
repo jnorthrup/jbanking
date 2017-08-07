@@ -39,43 +39,43 @@ public class IsoCurrencyTest {
 
     @Test
     public void fromAlphaCodeAllowsNull() {
-        assertNull(IsoCurrency.fromAlphabeticCode(null));
+        assertNull(IsoCurrency.Companion.fromAlphabeticCode(null));
     }
 
     @Test
     public void fromAlphaCodeAllowsUnknownOrInvalidCodes() {
-        assertNull(IsoCurrency.fromAlphabeticCode("AA"));
+        assertNull(IsoCurrency.Companion.fromAlphabeticCode("AA"));
     }
 
     @Test
     public void fromAlphaCodeIsNotCaseSensitive() {
-        assertEquals(IsoCurrency.EURO, IsoCurrency.fromAlphabeticCode(IsoCurrency.EURO.getAlphabeticCode().toLowerCase()));
+        assertEquals(IsoCurrency.EURO, IsoCurrency.Companion.fromAlphabeticCode(IsoCurrency.EURO.getAlphabeticCode().toLowerCase()));
     }
 
     @Test
     public void fromAlphaCodeWorksWithExistingValues() {
         for (IsoCurrency currency : IsoCurrency.values()) {
-            assertEquals(currency, IsoCurrency.fromAlphabeticCode(currency.getAlphabeticCode()));
+            assertEquals(currency, IsoCurrency.Companion.fromAlphabeticCode(currency.getAlphabeticCode()));
         }
     }
 
     @Test
     public void fromNumericCodeAllowsNull() {
-        assertEquals(IsoCurrency.NO_UNIVERSAL_CURRENCY, IsoCurrency.fromNumericCode(null));
+        assertEquals(IsoCurrency.NO_UNIVERSAL_CURRENCY, IsoCurrency.Companion.fromNumericCode(null));
     }
 
     @Test
     public void fromNumericCodeAllowsUnknownOrInvalidCodes() {
-        assertNull(IsoCurrency.fromNumericCode(-1));
-        assertNull(IsoCurrency.fromNumericCode(1));
-        assertNull(IsoCurrency.fromNumericCode(1000));
+        assertNull(IsoCurrency.Companion.fromNumericCode(-1));
+        assertNull(IsoCurrency.Companion.fromNumericCode(1));
+        assertNull(IsoCurrency.Companion.fromNumericCode(1000));
     }
 
     @Test
     public void fromNumericCodeWorksWithExistingValuesExceptForUicFranc() {
         for (IsoCurrency currency : IsoCurrency.values()) {
             if (currency != IsoCurrency.UIC_FRANC) {
-                assertEquals(currency, IsoCurrency.fromNumericCode(currency.getNumericCode()));
+                assertEquals(currency, IsoCurrency.Companion.fromNumericCode(currency.getNumericCode()));
             }
         }
     }
@@ -89,8 +89,8 @@ public class IsoCurrencyTest {
         for (Iterator i = document.getRootElement().elementIterator("ISO_CURRENCY"); i.hasNext(); ) {
             Element element = (Element) i.next();
 
-            IsoCurrency currencyFromAlphabeticCode = IsoCurrency.fromAlphabeticCode(element.elementText("ALPHABETIC_CODE"));
-            IsoCurrency currencyFromNumericCode = IsoCurrency.fromNumericCode(safeParseInt(element.elementText("NUMERIC_CODE")));
+            IsoCurrency currencyFromAlphabeticCode = IsoCurrency.Companion.fromAlphabeticCode(element.elementText("ALPHABETIC_CODE"));
+            IsoCurrency currencyFromNumericCode = IsoCurrency.Companion.fromNumericCode(safeParseInt(element.elementText("NUMERIC_CODE")));
 
             assertNotNull(currencyFromAlphabeticCode);
             assertNotNull(currencyFromNumericCode);

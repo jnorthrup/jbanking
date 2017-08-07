@@ -119,7 +119,7 @@ public class IbanTest {
 
     @Test
     public void nullIsNotAValidIban() {
-        assertFalse(Iban.isValid(null));
+        assertFalse(Iban.Companion.isValid(null));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -139,7 +139,7 @@ public class IbanTest {
 
     @Test
     public void blankIsNotAValidIban() {
-        assertFalse(Iban.isValid(TestUtils.BLANK));
+        assertFalse(Iban.Companion.isValid(TestUtils.BLANK));
     }
 
     @Test(expected = IbanFormatException.class)
@@ -154,7 +154,7 @@ public class IbanTest {
 
     @Test
     public void ibanWithUnknownCountryIsNotValid() {
-        assertFalse(Iban.isValid(IBAN_WITH_UNKNOWN_COUNTRY));
+        assertFalse(Iban.Companion.isValid(IBAN_WITH_UNKNOWN_COUNTRY));
     }
 
     @Test
@@ -170,7 +170,7 @@ public class IbanTest {
 
     @Test
     public void ibanWithUnsupportedCountryIsNotValid() {
-        assertFalse(Iban.isValid(IBAN_WITH_UNSUPPORTED_COUNTRY));
+        assertFalse(Iban.Companion.isValid(IBAN_WITH_UNSUPPORTED_COUNTRY));
     }
 
     @Test
@@ -197,7 +197,7 @@ public class IbanTest {
 
     @Test
     public void notProperlyFormattedIbanIsNotValid() {
-        assertFalse(Iban.isValid(IBAN_WITH_INVALID_FORMAT));
+        assertFalse(Iban.Companion.isValid(IBAN_WITH_INVALID_FORMAT));
     }
 
     @Test
@@ -213,7 +213,7 @@ public class IbanTest {
 
     @Test
     public void notProperlyStructuredIbanIsNotValid() {
-        assertFalse(Iban.isValid(IBAN_WITH_INVALID_BBAN_STRUCTURE));
+        assertFalse(Iban.Companion.isValid(IBAN_WITH_INVALID_BBAN_STRUCTURE));
     }
 
     @Test
@@ -240,7 +240,7 @@ public class IbanTest {
 
     @Test
     public void anIbanWithInvalidCheckDigitsIsNotValid() {
-        assertFalse(Iban.isValid(IBAN_WITH_INVALID_CHECK_DIGIT));
+        assertFalse(Iban.Companion.isValid(IBAN_WITH_INVALID_CHECK_DIGIT));
     }
 
     @Test
@@ -256,7 +256,7 @@ public class IbanTest {
 
     @Test
     public void validIbanDecomposition() {
-        assertTrue(Iban.isValid(VALID_IBAN));
+        assertTrue(Iban.Companion.isValid(VALID_IBAN));
         Iban iban = new Iban(VALID_IBAN);
         assertEquals(VALID_IBAN_COUNTRY, iban.getCountryCode());
         assertEquals(VALID_IBAN_CHECKDIGIT, iban.getCheckDigit());
@@ -266,12 +266,12 @@ public class IbanTest {
     @Test
     public void validIbansTest() {
         for (String ibanString : VALID_IBANS) {
-            assertTrue(String.format("%s should be valid", ibanString), Iban.isValid(ibanString));
+            assertTrue(String.format("%s should be valid", ibanString), Iban.Companion.isValid(ibanString));
 
             Iban iban = new Iban(ibanString);
             String countryCode = ibanString.substring(0, 2);
             String bban = ibanString.substring(4);
-            assertEquals(String.format("%s not properly calculated", iban), iban, new Iban(IsoCountry.fromCode(countryCode), bban));
+            assertEquals(String.format("%s not properly calculated", iban), iban, new Iban(IsoCountry.Companion.fromCode(countryCode), bban));
         }
     }
 
@@ -279,7 +279,7 @@ public class IbanTest {
     public void ibanValidationIsNotCaseSensitive() {
         for (String iban : VALID_IBANS) {
             String lowerCaseIban = iban.toLowerCase();
-            assertTrue(String.format("%s should be valid", lowerCaseIban), Iban.isValid(lowerCaseIban));
+            assertTrue(String.format("%s should be valid", lowerCaseIban), Iban.Companion.isValid(lowerCaseIban));
         }
     }
 
@@ -295,7 +295,7 @@ public class IbanTest {
         for (String iban : VALID_IBANS) {
             String countryCode = iban.substring(0, 2);
             String bban = iban.substring(4);
-            assertEquals(String.format("%s not properly calculated", iban), iban, new Iban(IsoCountry.fromCode(countryCode), bban.toLowerCase()).toString());
+            assertEquals(String.format("%s not properly calculated", iban), iban, new Iban(IsoCountry.Companion.fromCode(countryCode), bban.toLowerCase()).toString());
         }
     }
 
@@ -304,7 +304,7 @@ public class IbanTest {
         Iban iban = new Iban(VALID_IBAN);
         String printableIban = iban.toPrintableString();
 
-        assertTrue(Iban.isValid(printableIban));
+        assertTrue(Iban.Companion.isValid(printableIban));
         assertEquals(iban, new Iban(printableIban));
     }
 

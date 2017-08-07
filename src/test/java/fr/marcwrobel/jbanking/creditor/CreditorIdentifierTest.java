@@ -87,7 +87,7 @@ public class CreditorIdentifierTest {
 
     @Test
     public void nullIsNotAValidCreditorIdentifier() {
-        assertFalse(CreditorIdentifier.isValid(null));
+        assertFalse(CreditorIdentifier.Companion.isValid(null));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -107,7 +107,7 @@ public class CreditorIdentifierTest {
 
     @Test
     public void blankIsNotAValidCreditorIdentifier() {
-        assertFalse(CreditorIdentifier.isValid(TestUtils.BLANK));
+        assertFalse(CreditorIdentifier.Companion.isValid(TestUtils.BLANK));
     }
 
     @Test(expected = CreditorIdentifierFormatException.class)
@@ -122,7 +122,7 @@ public class CreditorIdentifierTest {
 
     @Test
     public void creditorIdWithUnknownCountryIsNotValid() {
-        assertFalse(CreditorIdentifier.isValid(CI_WITH_UNKNOWN_COUNTRY));
+        assertFalse(CreditorIdentifier.Companion.isValid(CI_WITH_UNKNOWN_COUNTRY));
     }
 
     @Test
@@ -138,12 +138,12 @@ public class CreditorIdentifierTest {
 
     @Test
     public void creditorIdWithUnsupportedCountryIsNotValid() {
-        assertFalse(CreditorIdentifier.isValid(CI_WITH_UNSUPPORTED_COUNTRY));
+        assertFalse(CreditorIdentifier.Companion.isValid(CI_WITH_UNSUPPORTED_COUNTRY));
     }
 
     @Test
     public void notProperlyFormattedCreditorIdentifierIsNotValid() {
-        assertFalse(CreditorIdentifier.isValid(CI_WITH_INVALID_FORMAT));
+        assertFalse(CreditorIdentifier.Companion.isValid(CI_WITH_INVALID_FORMAT));
     }
 
     @Test
@@ -170,7 +170,7 @@ public class CreditorIdentifierTest {
 
     @Test
     public void aCreditorIdWithInvalidCheckDigitsIsNotValid() {
-        assertFalse(CreditorIdentifier.isValid(CI_WITH_INVALID_CHECK_DIGIT));
+        assertFalse(CreditorIdentifier.Companion.isValid(CI_WITH_INVALID_CHECK_DIGIT));
     }
 
     @Test
@@ -186,7 +186,7 @@ public class CreditorIdentifierTest {
 
     @Test
     public void validCreditorIdentifierDecomposition() {
-        assertTrue(CreditorIdentifier.isValid(VALID_CI));
+        assertTrue(CreditorIdentifier.Companion.isValid(VALID_CI));
         CreditorIdentifier creditorId = new CreditorIdentifier(VALID_CI);
         assertEquals(VALID_CI_COUNTRY, creditorId.getCountryCode());
         assertEquals(VALID_CI_CHECKDIGIT, creditorId.getCheckDigit());
@@ -197,13 +197,13 @@ public class CreditorIdentifierTest {
     @Test
     public void validCreditorIdentifiersTest() {
         for (String creditorIdString : VALID_CREDITOR_IDENTIFIERS) {
-            assertTrue(String.format("%s should be valid", creditorIdString), CreditorIdentifier.isValid(creditorIdString));
+            assertTrue(String.format("%s should be valid", creditorIdString), CreditorIdentifier.Companion.isValid(creditorIdString));
 
             CreditorIdentifier creditorId = new CreditorIdentifier(creditorIdString);
             String countryCode = creditorIdString.substring(0, 2);
             String businessCode = creditorIdString.substring(4, 7);
             String nationalId = creditorIdString.substring(7);
-            assertEquals(String.format("%s not properly calculated", creditorId), creditorId, new CreditorIdentifier(IsoCountry.fromCode(countryCode), businessCode, nationalId));
+            assertEquals(String.format("%s not properly calculated", creditorId), creditorId, new CreditorIdentifier(IsoCountry.Companion.fromCode(countryCode), businessCode, nationalId));
         }
     }
 
@@ -211,7 +211,7 @@ public class CreditorIdentifierTest {
     public void creditorIdValidationIsNotCaseSensitive() {
         for (String creditorId : VALID_CREDITOR_IDENTIFIERS) {
             String lowerCaseCreditorIdentifier = creditorId.toLowerCase();
-            assertTrue(String.format("%s should be valid", lowerCaseCreditorIdentifier), CreditorIdentifier.isValid(lowerCaseCreditorIdentifier));
+            assertTrue(String.format("%s should be valid", lowerCaseCreditorIdentifier), CreditorIdentifier.Companion.isValid(lowerCaseCreditorIdentifier));
         }
     }
 
@@ -228,7 +228,7 @@ public class CreditorIdentifierTest {
             String countryCode = creditorId.substring(0, 2);
             String businessCode = creditorId.substring(4, 7);
             String nationalId = creditorId.substring(7);
-            assertEquals(String.format("%s not properly calculated", creditorId), creditorId, new CreditorIdentifier(IsoCountry.fromCode(countryCode), businessCode, nationalId.toLowerCase()).toString());
+            assertEquals(String.format("%s not properly calculated", creditorId), creditorId, new CreditorIdentifier(IsoCountry.Companion.fromCode(countryCode), businessCode, nationalId.toLowerCase()).toString());
         }
     }
 
@@ -237,7 +237,7 @@ public class CreditorIdentifierTest {
         CreditorIdentifier creditorId = new CreditorIdentifier(VALID_CI);
         String printableCreditorIdentifier = creditorId.toString();
 
-        assertTrue(CreditorIdentifier.isValid(printableCreditorIdentifier));
+        assertTrue(CreditorIdentifier.Companion.isValid(printableCreditorIdentifier));
         assertEquals(creditorId, new CreditorIdentifier(printableCreditorIdentifier));
     }
 

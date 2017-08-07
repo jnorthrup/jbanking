@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 		http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,25 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package fr.marcwrobel.jbanking;
+package fr.marcwrobel.jbanking
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.Arrays
+import java.util.EnumSet
 
 /**
  * The currencies having an ISO 4217 code.
  *
- * <p>
- * Please be advised that this list is current as of 2013/05/26. Up-to-date list can be found for free on the <a href="http://www.iso.org/iso/home/standards/currency_codes.htm">
- * International Organization for Standardization website</a>.
- * </p>
+ *
+ *
+ * Please be advised that this list is current as of 2013/05/26. Up-to-date list can be found for free on the [
+ * International Organization for Standardization website](http://www.iso.org/iso/home/standards/currency_codes.htm).
+ *
  *
  * @author Marc Wrobel
- * @see <a href="http://www.iso.org/iso/home/standards/currency_codes.htm">http://www.iso.org/iso/home/standards/currency_codes.htm</a>
+ * @see [http://www.iso.org/iso/home/standards/currency_codes.htm](http://www.iso.org/iso/home/standards/currency_codes.htm)
+ *
  * @since 1.0
  */
-public enum IsoCurrency {
+enum class IsoCurrency private constructor(
+        /**
+         *
+         * Returns this currency ISO 4217 alphabetical code.
+         *
+         * @return a non null and 3 characters length string
+         */
+        val alphabeticCode: String,
+        /**
+         *
+         * Returns this currency ISO 4217 numeric code.
+         *
+         * @return an Integer or null if this country is [.UIC_FRANC] or [.NO_UNIVERSAL_CURRENCY]
+         */
+        val numericCode: Int?,
+        /**
+         *
+         * Returns this currency minor unit, if applicable.
+         *
+         * @return an Integer or null if this not applicable
+         */
+        val minorUnit: Int?, vararg countries: IsoCountry) {
 
     ADB_UNIT_OF_ACCOUNT("XUA", 965, null),
     AFGHANI("AFN", 971, 2, IsoCountry.AFGHANISTAN),
@@ -217,100 +239,71 @@ public enum IsoCurrency {
     ZIMBABWE_DOLLAR("ZWL", 932, 2, IsoCountry.ZIMBABWE),
     ZLOTY("PLN", 985, 2, IsoCountry.POLAND);
 
-    private static final int MIN_NUMERIC_CODE = 1;
-    private static final int MAX_NUMERIC_CODE = 999;
-
-    private final String alphabeticCode;
-    private final Integer numericCode;
-    private final Integer minorUnit;
-    private final Set<IsoCountry> countries;
-
-    private IsoCurrency(String alphabeticCode, Integer numericCode, Integer minorUnit, IsoCountry... countries) {
-        this.alphabeticCode = alphabeticCode;
-        this.numericCode = numericCode;
-        this.minorUnit = minorUnit;
-        this.countries = countries.length > 0 ? EnumSet.copyOf(Arrays.asList(countries)) : EnumSet.noneOf(IsoCountry.class);
-    }
-
     /**
-     * <p>Returns this currency ISO 4217 alphabetical code.</p>
      *
-     * @return a non null and 3 characters length string
-     */
-    public String getAlphabeticCode() {
-        return alphabeticCode;
-    }
-
-    /**
-     * <p>Returns this currency ISO 4217 numeric code.</p>
-     *
-     * @return an Integer or null if this country is {@link #UIC_FRANC} or {@link #NO_UNIVERSAL_CURRENCY}
-     */
-    public Integer getNumericCode() {
-        return numericCode;
-    }
-
-    /**
-     * <p>Returns this currency minor unit, if applicable.</p>
-     *
-     * @return an Integer or null if this not applicable
-     */
-    public Integer getMinorUnit() {
-        return minorUnit;
-    }
-
-    /**
-     * <p>Returns the countries that are using this currency.</p>
+     * Returns the countries that are using this currency.
      *
      * @return a non null but may be empty set of countries
      */
-    public Set<IsoCountry> getCountries() {
-        return countries;
+    val countries: Set<IsoCountry>
+
+    init {
+        this.countries = if (countries.size > 0) EnumSet.copyOf(Arrays.asList(*countries)) else EnumSet.noneOf(IsoCountry::class.java)
     }
 
-    /**
-     * <p>Translate the given ISO 4217 alphabetical code to an IsoCurrency.</p>
-     *
-     * <p>This method is not case sensitive not spaces sensitive.</p>
-     *
-     * @param code A non null String.
-     * @return the currency having the given ISO 4217 alphabetical code, or null if it does not exist
-     */
-    public static IsoCurrency fromAlphabeticCode(String code) {
-        String cleanedCode = (code == null ? null : code.toUpperCase());
+    companion object {
 
-        for (IsoCurrency currency : values()) {
-            if (currency.getAlphabeticCode().equals(cleanedCode)) {
-                return currency;
+        private val MIN_NUMERIC_CODE = 1
+        private val MAX_NUMERIC_CODE = 999
+
+        /**
+         *
+         * Translate the given ISO 4217 alphabetical code to an IsoCurrency.
+         *
+         *
+         * This method is not case sensitive not spaces sensitive.
+         *
+         * @param code A non null String.
+         * @return the currency having the given ISO 4217 alphabetical code, or null if it does not exist
+         */
+        fun fromAlphabeticCode(code: String?): IsoCurrency? {
+            val cleanedCode = code?.toUpperCase()
+
+            for (currency in values()) {
+                if (currency.alphabeticCode == cleanedCode) {
+                    return currency
+                }
             }
+
+            return null
         }
 
-        return null;
-    }
-
-    /**
-     * <p>Translate the given ISO 4217 numeric code to an IsoCurrency.</p>
-     *
-     * <p>This method allows null. In this case {@link #NO_UNIVERSAL_CURRENCY} is always returned (and not {@link #UIC_FRANC}).</p>
-     *
-     * @param code An Integer, null or not.
-     * @return the currency having the given ISO 4217 numerical code ({@link #NO_UNIVERSAL_CURRENCY} if the given code is null), or null if it does not exist
-     */
-    public static IsoCurrency fromNumericCode(Integer code) {
-        if (code == null) {
-            return NO_UNIVERSAL_CURRENCY;
-        }
-
-        if (code < MIN_NUMERIC_CODE || code > MAX_NUMERIC_CODE) {
-            return null;
-        }
-
-        for (IsoCurrency currency : values()) {
-            if (code.equals(currency.getNumericCode())) {
-                return currency;
+        /**
+         *
+         * Translate the given ISO 4217 numeric code to an IsoCurrency.
+         *
+         *
+         * This method allows null. In this case [.NO_UNIVERSAL_CURRENCY] is always returned (and not [.UIC_FRANC]).
+         *
+         * @param code An Integer, null or not.
+         * @return the currency having the given ISO 4217 numerical code ([.NO_UNIVERSAL_CURRENCY] if the given code is null), or null if it does not exist
+         */
+        fun fromNumericCode(code: Int?): IsoCurrency? {
+            if (code == null) {
+                return NO_UNIVERSAL_CURRENCY
             }
-        }
 
-        return null;
+            if (code < MIN_NUMERIC_CODE || code > MAX_NUMERIC_CODE) {
+                return null
+            }
+
+            for (currency in values()) {
+                if (code == currency.numericCode) {
+                    return currency
+                }
+            }
+
+            return null
+        }
     }
 }
